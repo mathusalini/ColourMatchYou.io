@@ -16,11 +16,10 @@ body {
 .skin-box {
   width: 120px;
   height: 120px;
-  background: #ddd;
-  border-radius: 10px;
   border: 2px solid #ccc;
+  border-radius: 12px;
+  background: #ddd;
 }
-
 
 .output-grid {
   display: grid;
