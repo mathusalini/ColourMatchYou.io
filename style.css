@@ -2,34 +2,30 @@ body {
   font-family: system-ui, sans-serif;
 }
 
-/* Website title on top-right */
 .title-box {
   position: fixed;
-  top: 16px;
-  right: 16px;
-  background-color: #003366;
-  color: #fff;
+  top: 15px;
+  right: 15px;
+  background: #003366;
+  color: white;
   padding: 10px 20px;
   border-radius: 12px;
   font-weight: 600;
-  z-index: 2000;
 }
 
-/* Skin tone preview box */
 .skin-box {
   width: 120px;
   height: 120px;
-  background: #ddd;
-  border-radius: 12px;
   border: 2px solid #ccc;
+  border-radius: 12px;
+  background: #ddd;
 }
 
-/* Grid for 12 outputs */
 .output-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 16px;
-  margin-top: 12px;
+  gap: 15px;
+  margin-top: 15px;
 }
 
 .output-item {
@@ -39,7 +35,5 @@ body {
 .output-item canvas {
   width: 100%;
   height: auto;
-  border-radius: 12px;
-  border: 1px solid #eee;
   background: transparent;
 }
