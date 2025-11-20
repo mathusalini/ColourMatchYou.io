@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>SkinToneStyler</title>
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 
-  <!-- Color Thief -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
 </head>
 
@@ -18,45 +16,42 @@
 
   <div class="container py-5">
 
-    <!-- Upload Section -->
+    <!-- Upload -->
     <div class="card shadow-sm mb-4">
       <div class="card-body">
-        <h5 class="card-title text-primary fw-semibold">Upload Your Image</h5>
-        <p class="text-muted">We will detect your skin tone and apply it to your face.</p>
+        <h5 class="fw-semibold text-primary">Upload Your Image</h5>
+        <p class="text-muted">We detect your skin tone and apply it to the model.</p>
 
         <input type="file" id="userPhoto" class="form-control mb-3" accept="image/*">
-        <img id="photoPreview" class="mt-3 d-none img-thumbnail" alt="Preview" />
+        <img id="photoPreview" class="img-thumbnail mt-3 d-none">
       </div>
     </div>
 
-    <!-- Skin Tone Section -->
+    <!-- Skin Tone -->
     <div class="card shadow-sm mb-4">
       <div class="card-body">
-        <h5 class="card-title fw-semibold">Detected Skin Tone</h5>
-        <p class="text-muted">This is the extracted skin colour from your photo.</p>
-
+        <h5 class="fw-semibold">Detected Skin Tone</h5>
         <div id="skinToneBox" class="skin-box"></div>
       </div>
     </div>
 
-    <!-- Generate Button -->
-    <div class="text-center mb-4">
-      <button id="generateBtn" class="btn btn-primary px-4">Generate 12 Colour Looks</button>
+    <!-- Generate -->
+    <div class="text-center mb-3">
+      <button id="generateBtn" class="btn btn-primary px-4">Generate 15 Looks</button>
     </div>
 
-    <!-- Output Section -->
+    <!-- Output -->
     <div class="card shadow-sm">
       <div class="card-body">
-        <h5 class="card-title fw-semibold">Your 12 Colour Looks</h5>
-        <p class="text-muted">Hair stays black, face uses your skin tone, T-shirt changes colour.</p>
-
+        <h5 class="fw-semibold">Generated Looks</h5>
+        <p class="text-muted">Face uses skin tone. T-shirt uses 15 colours.</p>
         <div id="outputGrid" class="output-grid"></div>
       </div>
     </div>
+
   </div>
 
-  <!-- Base Silhouette -->
-  <img id="baseSilhouette" src="final_transparent_silhouette.png" class="d-none">
+  <img id="baseSilhouette" src="sampleimage.png" class="d-none">
 
   <script src="script.js"></script>
 </body>
