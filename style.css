@@ -1,26 +1,27 @@
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
-/* Title in corner */
+/* Website title on top-right */
 .title-box {
   position: fixed;
   top: 16px;
   right: 16px;
   background-color: #003366;
-  color: #ffffff;
+  color: #fff;
   padding: 10px 20px;
   border-radius: 12px;
   font-weight: 600;
   z-index: 2000;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Upload box */
-.upload-box {
-  border: 2px dashed #a5c4ff;
+/* Skin tone preview box */
+.skin-box {
+  width: 120px;
+  height: 120px;
+  background: #ddd;
   border-radius: 12px;
-  background: #f8fbff;
+  border: 2px solid #ccc;
 }
 
 /* Grid for 12 outputs */
@@ -31,16 +32,14 @@ body {
   margin-top: 12px;
 }
 
-/* Each result item */
 .output-item {
   text-align: center;
-  font-size: 0.9rem;
 }
 
 .output-item canvas {
   width: 100%;
   height: auto;
   border-radius: 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #eee;
   background: transparent;
 }
