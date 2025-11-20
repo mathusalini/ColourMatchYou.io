@@ -1,147 +1,140 @@
-// -------------- CONFIG --------------
+// -----------------------------------------
+// CONFIG
+// -----------------------------------------
 
-// 12 T-shirt colours (you can change)
-const SHIRT_COLOURS = [
-  { name: "Red",      rgb: [220, 60, 60] },
-  { name: "Green",    rgb: [70, 170, 80] },
-  { name: "Blue",     rgb: [60, 90, 220] },
-  { name: "Yellow",   rgb: [240, 210, 60] },
-  { name: "Orange",   rgb: [240, 140, 50] },
-  { name: "Pink",     rgb: [235, 120, 190] },
-  { name: "Purple",   rgb: [150, 90, 210] },
-  { name: "Brown",    rgb: [120, 70, 40] },
-  { name: "Black",    rgb: [20, 20, 20] },
-  { name: "White",    rgb: [240, 240, 240] },
-  { name: "Teal",     rgb: [40, 160, 160] },
-  { name: "Olive",    rgb: [110, 130, 50] }
+// T-shirt colours you want
+const SHIRT_COLORS = [
+  { name: "Red", rgb: [220, 50, 50] },
+  { name: "Green", rgb: [60, 170, 60] },
+  { name: "Blue", rgb: [70, 110, 220] },
+  { name: "Yellow", rgb: [240, 210, 60] },
+  { name: "Orange", rgb: [245, 140, 50] },
+  { name: "Pink", rgb: [230, 100, 180] },
+  { name: "Purple", rgb: [150, 70, 200] },
+  { name: "Brown", rgb: [120, 70, 40] },
+  { name: "Black", rgb: [20, 20, 20] },
+  { name: "White", rgb: [240, 240, 240] },
+  { name: "Teal", rgb: [40, 160, 160] },
+  { name: "Olive", rgb: [110, 130, 50] }
 ];
 
-let skinColour = [210, 180, 160]; // default backup
+let skinColor = [200, 160, 120]; // fallback if colour extract fails
 
-// DOM references
-const userPhotoInput = document.getElementById("userPhoto");
-const photoPreview   = document.getElementById("photoPreview");
-const baseSilImg     = document.getElementById("baseSilhouette");
-const outputGrid     = document.getElementById("outputGrid");
-const generateBtn    = document.getElementById("generateBtn");
+const userImgInput = document.getElementById("userPhoto");
+const previewImg = document.getElementById("photoPreview");
+const outputGrid = document.getElementById("outputGrid");
+const baseSilhouette = document.getElementById("baseSilhouette");
 
-// -------------- IMAGE UPLOAD & SKIN COLOUR EXTRACTION --------------
-
-userPhotoInput.addEventListener("change", e => {
+// -----------------------------------------
+// 1. Extract skin tone from user-uploaded image
+// -----------------------------------------
+userImgInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
   const url = URL.createObjectURL(file);
-  photoPreview.src = url;
-  photoPreview.classList.remove("d-none");
+  previewImg.src = url;
+  previewImg.classList.remove("d-none");
 
-  photoPreview.onload = () => {
+  previewImg.onload = () => {
     try {
-      const colorThief = new ColorThief();
-      // dominant colour of the whole image (you can later crop face area if needed)
-      const main = colorThief.getColor(photoPreview);
-      skinColour = main;
-      console.log("Detected skin-ish colour:", skinColour);
+      const thief = new ColorThief();
+      // Dominant colour of whole image = skin-ish tone
+      skinColor = thief.getColor(previewImg);
+      console.log("Detected Skin Colour:", skinColor);
     } catch (err) {
-      console.error(err);
-      alert("Could not extract colour. Using default tone.");
+      console.error("Colour extract failed:", err);
     }
   };
 });
 
-// -------------- MAIN GENERATION --------------
-
-generateBtn.addEventListener("click", () => {
-  if (!baseSilImg.complete) {
-    alert("Base silhouette not loaded yet. Please wait a moment and try again.");
-    return;
-  }
-  if (!userPhotoInput.files[0]) {
-    alert("Please upload your image first.");
+// -----------------------------------------
+// 2. Generate 12 output images
+// -----------------------------------------
+document.getElementById("generateBtn").addEventListener("click", () => {
+  if (!userImgInput.files[0]) {
+    alert("Upload your photo first!");
     return;
   }
 
-  outputGrid.innerHTML = ""; // clear old results
-  SHIRT_COLOURS.forEach((colour, index) => {
+  if (!baseSilhouette.complete) {
+    alert("Silhouette not loaded yet!");
+    return;
+  }
+
+  outputGrid.innerHTML = ""; // Clear old results
+
+  SHIRT_COLORS.forEach((col, index) => {
+    // Canvas
     const canvas = document.createElement("canvas");
-    const label = document.createElement("div");
-    const wrapper = document.createElement("div");
-    wrapper.className = "output-item";
+    const ctx = canvas.getContext("2d");
 
-    wrapper.appendChild(canvas);
-    label.textContent = `${index + 1}. ${colour.name}`;
-    wrapper.appendChild(label);
-    outputGrid.appendChild(wrapper);
+    const w = baseSilhouette.naturalWidth;
+    const h = baseSilhouette.naturalHeight;
+    canvas.width = w;
+    canvas.height = h;
 
-    drawVariant(canvas, skinColour, colour.rgb);
-  });
-});
+    // Draw base silhouette into temp canvas to read pixels
+    const temp = document.createElement("canvas");
+    temp.width = w;
+    temp.height = h;
+    const tctx = temp.getContext("2d");
+    tctx.drawImage(baseSilhouette, 0, 0, w, h);
 
-/**
- * Draws one variant on the given canvas.
- * - hair stays black
- * - face = skinColour
- * - shirt = shirtColour
- */
-function drawVariant(canvas, skinColour, shirtColour) {
-  const w = baseSilImg.naturalWidth;
-  const h = baseSilImg.naturalHeight;
+    const imgData = tctx.getImageData(0, 0, w, h);
+    const data = imgData.data;
 
-  canvas.width = w;
-  canvas.height = h;
+    // Face area ends at neckline → approx 45%
+    const faceEndY = Math.floor(h * 0.45);
 
-  const ctx = canvas.getContext("2d");
+    // Pixel recolouring loop
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const a = data[i + 3];
 
-  // Draw base silhouette to temp canvas to inspect pixels
-  const temp = document.createElement("canvas");
-  temp.width = w;
-  temp.height = h;
-  const tctx = temp.getContext("2d");
-  tctx.drawImage(baseSilImg, 0, 0, w, h);
+        if (a === 0) continue; // transparent → fillable region
 
-  const imgData = tctx.getImageData(0, 0, w, h);
-  const data = imgData.data;
+        const brightness = (r + g + b) / 3;
 
-  // vertical threshold to separate face and shirt
-  const faceBottomY = Math.floor(h * 0.45); // tweak if needed
-
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const i = (y * w + x) * 4;
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-      const a = data[i + 3];
-
-      if (a === 0) continue; // fully transparent, skip
-
-      const brightness = (r + g + b) / 3;
-
-      // Assume: hair & outline are dark, face/shirt are light
-      if (brightness < 60) {
-        // Hair or outline -> draw solid black
-        data[i] = 0;
-        data[i + 1] = 0;
-        data[i + 2] = 0;
-        data[i + 3] = 255;
-      } else {
-        // Light regions: decide face vs shirt by y position
-        if (y < faceBottomY) {
-          // Face region
-          data[i] = skinColour[0];
-          data[i + 1] = skinColour[1];
-          data[i + 2] = skinColour[2];
+        // 1. Hair & outline = dark pixels → keep black
+        if (brightness < 40) {
+          data[i] = 0;
+          data[i + 1] = 0;
+          data[i + 2] = 0;
           data[i + 3] = 255;
-        } else {
-          // Shirt region
-          data[i] = shirtColour[0];
-          data[i + 1] = shirtColour[1];
-          data[i + 2] = shirtColour[2];
+        }
+        // 2. Face region (transparent originally)
+        else if (y < faceEndY) {
+          data[i] = skinColor[0];
+          data[i + 1] = skinColor[1];
+          data[i + 2] = skinColor[2];
+          data[i + 3] = 255;
+        }
+        // 3. T-shirt region
+        else {
+          data[i] = col.rgb[0];
+          data[i + 1] = col.rgb[1];
+          data[i + 2] = col.rgb[2];
           data[i + 3] = 255;
         }
       }
     }
-  }
 
-  ctx.putImageData(imgData, 0, 0);
-}
+    ctx.putImageData(imgData, 0, 0);
+
+    // Display output
+    const wrapper = document.createElement("div");
+    wrapper.className = "output-item";
+
+    const label = document.createElement("div");
+    label.textContent = `${index + 1}. ${col.name}`;
+
+    wrapper.appendChild(canvas);
+    wrapper.appendChild(label);
+    outputGrid.appendChild(wrapper);
+  });
+});
