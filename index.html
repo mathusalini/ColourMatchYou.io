@@ -2,28 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SkinToneStyler</title>
+  <title>SkinTone Output</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="bg-light">
 
 <div class="container py-5">
 
-  <h3 class="fw-bold mb-4">16-Face Skin Tone Styler</h3>
+  <h3 class="fw-bold mb-4">Face Skin Tone Styler</h3>
 
+  <!-- Upload -->
   <div class="card mb-4">
     <div class="card-body">
-      <h5>Upload Your Image</h5>
+      <h5>Upload your photo</h5>
       <input type="file" id="userPhoto" class="form-control mb-3" accept="image/*">
       <img id="photoPreview" class="img-thumbnail mt-3 d-none">
     </div>
   </div>
 
+  <!-- Skin Tone -->
   <div class="card mb-4">
     <div class="card-body">
       <h5>Detected Skin Tone</h5>
@@ -31,21 +32,4 @@
     </div>
   </div>
 
-  <div class="text-center mb-4">
-    <button class="btn btn-primary px-4" id="generateBtn">Apply Skin Tone</button>
-  </div>
-
-  <div class="card">
-    <div class="card-body">
-      <h5>Final Output</h5>
-      <canvas id="outputCanvas" class="w-100"></canvas>
-    </div>
-  </div>
-
-</div>
-
-<img src="faces16.png" id="faces16" class="d-none">
-
-<script src="script.js"></script>
-</body>
-</html>
+  <!-- Generate
